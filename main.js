@@ -74,7 +74,11 @@ async function captureTextFromClipboard() {
           text: clipboardText.trim(),
           response: aiResponse,
         });
+        console.log("Showing window for clipboard text...");
         mainWindow.show();
+        mainWindow.focus();
+        mainWindow.moveTop();
+        console.log("Window should now be visible and focused");
       }
     } else {
       if (mainWindow && !mainWindow.isDestroyed()) {
@@ -83,7 +87,11 @@ async function captureTextFromClipboard() {
           response:
             "📋 No text in clipboard!\n\nTo use this app:\n1. Select text on your screen\n2. Copy it (Cmd+C)\n3. Use the shortcut (Cmd+Ctrl+J)\n\nThis will analyze your copied text with AI.",
         });
+        console.log("Showing window for no clipboard text...");
         mainWindow.show();
+        mainWindow.focus();
+        mainWindow.moveTop();
+        console.log("Window should now be visible and focused");
       }
     }
   } catch (error) {
@@ -93,7 +101,11 @@ async function captureTextFromClipboard() {
         text: "",
         response: `Error: ${error.message}. Please try again.`,
       });
+      console.log("Showing window for clipboard error...");
       mainWindow.show();
+      mainWindow.focus();
+      mainWindow.moveTop();
+      console.log("Window should now be visible and focused");
     }
   } finally {
     isCapturing = false;
@@ -133,7 +145,7 @@ async function captureSelectedText() {
     // Check permissions first
     const hasPermissions = await checkAccessibilityPermissions();
 
-    // Clear clipboard first to avoid copying old error messages
+    // Clear clipboard first to avoid pollution
     clipboard.clear();
     await new Promise((resolve) => setTimeout(resolve, 100));
 
@@ -147,23 +159,46 @@ async function captureSelectedText() {
     const platform = process.platform;
 
     if (platform === "darwin" && hasPermissions) {
-      // macOS: Try multiple approaches to copy selected text
+      // macOS: Simple copy approach that was working before
       console.log("Copying selected text...");
 
-      // Method 1: Try to copy from the active application
-      const copyScript1 = `
+      // First, let's see what the active application is
+      const getActiveAppScript = `
         tell application "System Events"
-          delay 0.1
-          keystroke "c" using command down
+          set activeApp to name of first application process whose frontmost is true
+          return activeApp
+        end tell
+      `;
+
+      const activeAppName = await new Promise((resolve) => {
+        exec(`osascript -e '${getActiveAppScript}'`, (error, stdout) => {
+          if (error) {
+            console.error("Failed to get active app:", error.message);
+            resolve("unknown");
+          } else {
+            console.log("Active application:", stdout.trim());
+            resolve(stdout.trim());
+          }
+        });
+      });
+
+      // Simple copy command that was working before
+      const copyScript = `
+        tell application "System Events"
+          set activeApp to name of first application process whose frontmost is true
+          tell process activeApp
+            delay 0.1
+            keystroke "c" using command down
+          end tell
         end tell
       `;
 
       await new Promise((resolve) => {
-        exec(`osascript -e '${copyScript1}'`, (error) => {
+        exec(`osascript -e '${copyScript}'`, (error) => {
           if (error) {
-            console.error("Method 1 failed:", error.message);
+            console.error("Copy command failed:", error.message);
           } else {
-            console.log("Method 1: Copy command sent");
+            console.log("Copy command sent successfully");
           }
           resolve();
         });
@@ -172,84 +207,59 @@ async function captureSelectedText() {
       // Wait for copy to complete
       await new Promise((resolve) => setTimeout(resolve, 300));
 
-      // Check if we got text
+      // Get the copied text
       let selectedText = clipboard.readText();
       console.log(
-        "After Method 1:",
+        "Clipboard content after copy:",
         selectedText ? `"${selectedText.substring(0, 50)}..."` : "empty"
       );
 
-      // If Method 1 didn't work, try Method 2
-      if (!selectedText || selectedText.trim().length === 0) {
-        console.log("Method 1 didn't work, trying Method 2...");
+      // If first method didn't work, try with activation
+      if (
+        !selectedText ||
+        selectedText.trim().length === 0 ||
+        selectedText === originalClipboard
+      ) {
+        console.log("First method didn't work, trying with activation...");
 
-        const copyScript2 = `
+        const copyScriptWithActivation = `
           tell application "System Events"
-            delay 0.2
-            keystroke "c" using {command down}
-          end tell
-        `;
-
-        await new Promise((resolve) => {
-          exec(`osascript -e '${copyScript2}'`, (error) => {
-            if (error) {
-              console.error("Method 2 failed:", error.message);
-            } else {
-              console.log("Method 2: Copy command sent");
-            }
-            resolve();
-          });
-        });
-
-        await new Promise((resolve) => setTimeout(resolve, 300));
-        selectedText = clipboard.readText();
-        console.log(
-          "After Method 2:",
-          selectedText ? `"${selectedText.substring(0, 50)}..."` : "empty"
-        );
-      }
-
-      // If Method 2 didn't work, try Method 3
-      if (!selectedText || selectedText.trim().length === 0) {
-        console.log("Method 2 didn't work, trying Method 3...");
-
-        const copyScript3 = `
-          tell application "System Events"
+            set activeApp to name of first application process whose frontmost is true
+            tell application activeApp to activate
             delay 0.3
-            key code 8 using command down
+            tell process activeApp
+              keystroke "c" using command down
+            end tell
           end tell
         `;
 
         await new Promise((resolve) => {
-          exec(`osascript -e '${copyScript3}'`, (error) => {
+          exec(`osascript -e '${copyScriptWithActivation}'`, (error) => {
             if (error) {
-              console.error("Method 3 failed:", error.message);
+              console.error(
+                "Copy command with activation failed:",
+                error.message
+              );
             } else {
-              console.log("Method 3: Copy command sent");
+              console.log("Copy command with activation sent successfully");
             }
             resolve();
           });
         });
 
-        await new Promise((resolve) => setTimeout(resolve, 300));
+        await new Promise((resolve) => setTimeout(resolve, 400));
         selectedText = clipboard.readText();
         console.log(
-          "After Method 3:",
+          "Clipboard content after copy with activation:",
           selectedText ? `"${selectedText.substring(0, 50)}..."` : "empty"
         );
       }
 
-      // Check if we got new text (more lenient check)
+      // Check if we got new text
       if (
         selectedText &&
         selectedText.trim().length > 0 &&
-        selectedText !== originalClipboard &&
-        !selectedText.includes("Error:") &&
-        !selectedText.includes("Primary shortcut triggered") &&
-        !selectedText.includes("Capturing selected text") &&
-        !selectedText.includes("Copy command sent") &&
-        !selectedText.includes("Original clipboard content") &&
-        !selectedText.includes("Try copying text manually")
+        selectedText !== originalClipboard
       ) {
         console.log("Text captured successfully, processing with AI...");
         // Query Ollama
@@ -262,17 +272,41 @@ async function captureSelectedText() {
             text: selectedText.trim(),
             response: aiResponse,
           });
+          console.log("Showing window for successful text capture...");
           mainWindow.show();
+          mainWindow.setAlwaysOnTop(true);
+          mainWindow.focus();
+          mainWindow.moveTop();
+
+          // More aggressive focus for stubborn apps like Cursor
+          setTimeout(() => {
+            mainWindow.focus();
+            mainWindow.moveTop();
+          }, 100);
+
+          setTimeout(() => {
+            mainWindow.focus();
+            mainWindow.moveTop();
+            // Reset alwaysOnTop after a delay so it doesn't stay on top forever
+            setTimeout(() => {
+              mainWindow.setAlwaysOnTop(false);
+            }, 2000);
+          }, 300);
+
+          console.log("Window should now be visible and focused");
         }
       } else {
         console.log("No text captured, showing instructions...");
         if (mainWindow && !mainWindow.isDestroyed()) {
           mainWindow.webContents.send("text-captured", {
             text: "",
-            response:
-              "📋 No text captured!\n\nTo use this app:\n1. Select text on your screen\n2. Copy it manually (Cmd+C)\n3. Use the shortcut (Cmd+Ctrl+J)\n\nThis will analyze your copied text with AI.\n\nNote: Automatic copy requires accessibility permissions. For now, please copy text manually.",
+            response: `📋 No text captured from ${activeAppName}!\n\nTo use this app:\n1. Select text on your screen (highlight it)\n2. Copy it manually (Cmd+C)\n3. Use the shortcut (Cmd+Ctrl+J)\n\nThis will analyze your copied text with AI.\n\nNote: Make sure text is actually selected (highlighted) before using the shortcut.`,
           });
+          console.log("Showing window for no text captured...");
           mainWindow.show();
+          mainWindow.focus();
+          mainWindow.moveTop();
+          console.log("Window should now be visible and focused");
         }
       }
 
@@ -293,7 +327,11 @@ async function captureSelectedText() {
         text: "",
         response: `Error: ${error.message}. Please try again.\n\nTry copying text manually (Cmd+C) first, then use the shortcut.`,
       });
+      console.log("Showing window for error...");
       mainWindow.show();
+      mainWindow.focus();
+      mainWindow.moveTop();
+      console.log("Window should now be visible and focused");
     }
   } finally {
     isCapturing = false;
@@ -312,6 +350,7 @@ function createWindow() {
     show: false,
     title: "Text Lookup",
     icon: path.join(__dirname, "assets", "icon.png"),
+    alwaysOnTop: true,
   });
 
   mainWindow.loadFile("index.html");
@@ -340,6 +379,8 @@ function createTray() {
       label: "Show Window",
       click: () => {
         mainWindow.show();
+        mainWindow.focus();
+        mainWindow.moveTop();
       },
     },
     {
@@ -368,6 +409,8 @@ function createTray() {
 
   tray.on("click", () => {
     mainWindow.show();
+    mainWindow.focus();
+    mainWindow.moveTop();
   });
 }
 
@@ -392,6 +435,8 @@ async function checkOllamaStatus() {
 }
 
 function registerGlobalShortcuts() {
+  console.log("Registering global shortcuts...");
+
   // Register Cmd+Ctrl+J as primary shortcut (less commonly used)
   const ret = globalShortcut.register("CommandOrControl+Control+J", () => {
     console.log("Primary shortcut triggered");
@@ -399,7 +444,9 @@ function registerGlobalShortcuts() {
   });
 
   if (!ret) {
-    console.log("Primary global shortcut registration failed");
+    console.log("❌ Primary global shortcut registration failed");
+  } else {
+    console.log("✅ Primary global shortcut registered: Cmd+Ctrl+J");
   }
 
   // Alternative shortcut: Cmd+Ctrl+K
@@ -409,7 +456,9 @@ function registerGlobalShortcuts() {
   });
 
   if (!ret2) {
-    console.log("Alternative global shortcut registration failed");
+    console.log("❌ Alternative global shortcut registration failed");
+  } else {
+    console.log("✅ Alternative global shortcut registered: Cmd+Ctrl+K");
   }
 
   // Third option: Cmd+Ctrl+L
@@ -419,14 +468,22 @@ function registerGlobalShortcuts() {
   });
 
   if (!ret3) {
-    console.log("Third global shortcut registration failed");
+    console.log("❌ Third global shortcut registration failed");
+  } else {
+    console.log("✅ Third global shortcut registered: Cmd+Ctrl+L");
   }
+
+  console.log("Global shortcuts registration completed");
 }
 
 app.whenReady().then(() => {
+  console.log("🚀 App is ready, initializing...");
   createWindow();
+  console.log("✅ Window created");
   createTray();
+  console.log("✅ Tray created");
   registerGlobalShortcuts();
+  console.log("✅ App initialization completed");
 });
 
 app.on("window-all-closed", () => {
