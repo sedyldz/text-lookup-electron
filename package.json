@@ -4,8 +4,8 @@
   "description": "Electron app for text lookup with Ollama integration",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "dev": "electron . --dev",
+    "start": "npx electron .",
+    "dev": "npx electron . --dev",
     "build": "electron-builder",
     "dist": "electron-builder --publish=never"
   },

@@ -1,15 +1,15 @@
 # Text Lookup Electron App
 
-A modern Electron application that captures text from your screen and gets AI explanations using Ollama with llama3.2.
+A modern Electron application that captures selected text from your screen and gets AI explanations using Ollama with llama3.2.
 
 ## ✨ Features
 
-- **Global Keyboard Shortcuts**: Use `⌘+⇧+T` or `⌘+⌥+T` to capture text from anywhere
-- **Screen Text Recognition**: Uses Tesseract.js for OCR text extraction
+- **Global Keyboard Shortcuts**: Use `⌘+Ctrl+J`, `⌘+Ctrl+K`, or `⌘+Ctrl+L` to capture selected text
+- **Selected Text Capture**: Automatically copies and analyzes your selected text
 - **Local AI Integration**: Connects to Ollama running locally with llama3.2
 - **Modern UI**: Beautiful, responsive interface with real-time status updates
 - **Tray App**: Runs in the background with a system tray icon
-- **No Xcode Required**: Pure JavaScript/Node.js solution
+- **Clipboard Preservation**: Restores your original clipboard content after processing
 
 ## 🚀 Quick Start
 
@@ -18,37 +18,37 @@ A modern Electron application that captures text from your screen and gets AI ex
 - **Node.js** (v16 or later)
 - **Ollama** with llama3.2 model
 
-### Installation
+### Installation & Startup
 
-1. **Install dependencies:**
+**Option 1: Simple npm command**
 
-   ```bash
-   npm install
-   ```
+```bash
+cd text-lookup-electron
+npm install
+npm start
+```
 
-2. **Start the app:**
+**Option 2: Double-click startup (macOS)**
 
-   ```bash
-   npm start
-   ```
-
-3. **Grant permissions** when prompted (screen recording and accessibility)
+- Double-click `start-app.command` in Finder
+- The script will handle all setup automatically
 
 ## 🎯 How to Use
 
 1. **Start the app** - It will appear in your system tray
-2. **Hover over any text** on your screen
-3. **Press `⌘+⇧+T`** (or `⌘+⌥+T`) to capture text
+2. **Select any text** on your screen (in any application)
+3. **Press `⌘+Ctrl+J`** (or `⌘+Ctrl+K` / `⌘+Ctrl+L`) to capture and analyze
 4. **View the AI response** in the popup window
 
 ## ⌨️ Keyboard Shortcuts
 
-| Action              | Shortcut        |
-| ------------------- | --------------- |
-| Capture text        | `⌘+⇧+T`         |
-| Alternative capture | `⌘+⌥+T`         |
-| Show/hide window    | Click tray icon |
-| Close window        | `Esc`           |
+| Action                | Shortcut        |
+| --------------------- | --------------- |
+| Capture selected text | `⌘+Ctrl+J`      |
+| Alternative capture   | `⌘+Ctrl+K`      |
+| Third option          | `⌘+Ctrl+L`      |
+| Show/hide window      | Click tray icon |
+| Close window          | `Esc`           |
 
 ## 🔧 Configuration
 
@@ -72,10 +72,6 @@ Modify the prompt in `main.js`:
 prompt: `Please provide a helpful explanation or information about this text: "${text}". Keep your response concise, clear, and informative.`;
 ```
 
-### Adjusting Capture Area
-
-The app currently captures the entire screen. To capture a specific area around the mouse, you can modify the `captureTextFromScreen` function in `main.js`.
-
 ## 🛠️ Development
 
 ### Project Structure
@@ -85,6 +81,7 @@ text-lookup-electron/
 ├── main.js              # Main Electron process
 ├── index.html           # App interface
 ├── package.json         # Dependencies and scripts
+├── start-app.command    # Single startup script
 ├── assets/              # App icons
 └── README.md           # This file
 ```
@@ -110,8 +107,8 @@ This will create a `.dmg` file in the `dist` folder.
 
 1. **Check permissions:**
 
-   - System Preferences > Security & Privacy > Privacy > Screen Recording
    - System Preferences > Security & Privacy > Privacy > Accessibility
+   - The app needs accessibility permissions to simulate copy operations
 
 2. **Verify Ollama is running:**
 
@@ -122,11 +119,11 @@ This will create a `.dmg` file in the `dist` folder.
 
 3. **Check the app status** - The UI will show if Ollama is connected
 
-### Text Recognition Issues
+### Text Selection Issues
 
-- Ensure text is clearly visible and not too small
-- Try different text on the screen
-- Check that screen recording permissions are granted
+- Make sure text is actually selected (highlighted) before using the shortcut
+- Try selecting text in different applications
+- Check that accessibility permissions are granted
 
 ### Ollama Connection Issues
 
@@ -163,16 +160,15 @@ The app uses CSS for styling. You can modify `index.html` to change:
 Key areas to customize in `main.js`:
 
 - Global shortcuts
-- Text recognition settings
+- Text capture behavior
 - Ollama API configuration
 - Window behavior
 
 ## 📦 Dependencies
 
 - **Electron** - Desktop app framework
-- **robotjs** - Mouse/keyboard automation
-- **screenshot-desktop** - Screen capture
-- **tesseract.js** - OCR text recognition
+- **child_process** - For simulating copy operations
+- **clipboard** - Clipboard management
 
 ## 🤝 Contributing
 
@@ -196,4 +192,4 @@ If you encounter issues:
 
 ---
 
-**Note:** This app requires screen recording and accessibility permissions to function properly. These permissions are necessary for capturing text from your screen.
+**Note:** This app requires accessibility permissions to function properly. These permissions are necessary for simulating copy operations to capture your selected text.

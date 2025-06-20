@@ -8,6 +8,7 @@ const {
   clipboard,
 } = require("electron");
 const path = require("path");
+const { exec } = require("child_process");
 
 let mainWindow;
 let tray;
@@ -43,7 +44,7 @@ async function queryOllama(text) {
   }
 }
 
-// Capture text from clipboard with user instructions
+// Capture text from clipboard (reliable method)
 async function captureTextFromClipboard() {
   if (isCapturing) {
     console.log("Already capturing, skipping...");
@@ -80,7 +81,7 @@ async function captureTextFromClipboard() {
         mainWindow.webContents.send("text-captured", {
           text: "",
           response:
-            "📋 No text in clipboard!\n\nTo use this app:\n1. Select text on your screen\n2. Copy it (Cmd+C)\n3. Use the shortcut again\n\nThis will analyze your copied text with AI.",
+            "📋 No text in clipboard!\n\nTo use this app:\n1. Select text on your screen\n2. Copy it (Cmd+C)\n3. Use the shortcut (Cmd+Ctrl+J)\n\nThis will analyze your copied text with AI.",
         });
         mainWindow.show();
       }
@@ -91,6 +92,206 @@ async function captureTextFromClipboard() {
       mainWindow.webContents.send("text-captured", {
         text: "",
         response: `Error: ${error.message}. Please try again.`,
+      });
+      mainWindow.show();
+    }
+  } finally {
+    isCapturing = false;
+    console.log("Text capture completed");
+  }
+}
+
+// Check if we have accessibility permissions
+async function checkAccessibilityPermissions() {
+  return new Promise((resolve) => {
+    exec(
+      'osascript -e \'tell application "System Events" to keystroke "a" using command down\'',
+      (error) => {
+        if (error) {
+          console.log("Accessibility permissions may not be granted");
+          resolve(false);
+        } else {
+          console.log("Accessibility permissions appear to be working");
+          resolve(true);
+        }
+      }
+    );
+  });
+}
+
+// Capture selected text by simulating copy operation
+async function captureSelectedText() {
+  if (isCapturing) {
+    console.log("Already capturing, skipping...");
+    return;
+  }
+
+  isCapturing = true;
+  console.log("Capturing selected text...");
+
+  try {
+    // Check permissions first
+    const hasPermissions = await checkAccessibilityPermissions();
+
+    // Clear clipboard first to avoid copying old error messages
+    clipboard.clear();
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // Store current clipboard content (should be empty now)
+    const originalClipboard = clipboard.readText();
+    console.log(
+      "Original clipboard content:",
+      originalClipboard ? `"${originalClipboard.substring(0, 50)}..."` : "empty"
+    );
+
+    const platform = process.platform;
+
+    if (platform === "darwin" && hasPermissions) {
+      // macOS: Try multiple approaches to copy selected text
+      console.log("Copying selected text...");
+
+      // Method 1: Try to copy from the active application
+      const copyScript1 = `
+        tell application "System Events"
+          delay 0.1
+          keystroke "c" using command down
+        end tell
+      `;
+
+      await new Promise((resolve) => {
+        exec(`osascript -e '${copyScript1}'`, (error) => {
+          if (error) {
+            console.error("Method 1 failed:", error.message);
+          } else {
+            console.log("Method 1: Copy command sent");
+          }
+          resolve();
+        });
+      });
+
+      // Wait for copy to complete
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      // Check if we got text
+      let selectedText = clipboard.readText();
+      console.log(
+        "After Method 1:",
+        selectedText ? `"${selectedText.substring(0, 50)}..."` : "empty"
+      );
+
+      // If Method 1 didn't work, try Method 2
+      if (!selectedText || selectedText.trim().length === 0) {
+        console.log("Method 1 didn't work, trying Method 2...");
+
+        const copyScript2 = `
+          tell application "System Events"
+            delay 0.2
+            keystroke "c" using {command down}
+          end tell
+        `;
+
+        await new Promise((resolve) => {
+          exec(`osascript -e '${copyScript2}'`, (error) => {
+            if (error) {
+              console.error("Method 2 failed:", error.message);
+            } else {
+              console.log("Method 2: Copy command sent");
+            }
+            resolve();
+          });
+        });
+
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        selectedText = clipboard.readText();
+        console.log(
+          "After Method 2:",
+          selectedText ? `"${selectedText.substring(0, 50)}..."` : "empty"
+        );
+      }
+
+      // If Method 2 didn't work, try Method 3
+      if (!selectedText || selectedText.trim().length === 0) {
+        console.log("Method 2 didn't work, trying Method 3...");
+
+        const copyScript3 = `
+          tell application "System Events"
+            delay 0.3
+            key code 8 using command down
+          end tell
+        `;
+
+        await new Promise((resolve) => {
+          exec(`osascript -e '${copyScript3}'`, (error) => {
+            if (error) {
+              console.error("Method 3 failed:", error.message);
+            } else {
+              console.log("Method 3: Copy command sent");
+            }
+            resolve();
+          });
+        });
+
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        selectedText = clipboard.readText();
+        console.log(
+          "After Method 3:",
+          selectedText ? `"${selectedText.substring(0, 50)}..."` : "empty"
+        );
+      }
+
+      // Check if we got new text (more lenient check)
+      if (
+        selectedText &&
+        selectedText.trim().length > 0 &&
+        selectedText !== originalClipboard &&
+        !selectedText.includes("Error:") &&
+        !selectedText.includes("Primary shortcut triggered") &&
+        !selectedText.includes("Capturing selected text") &&
+        !selectedText.includes("Copy command sent") &&
+        !selectedText.includes("Original clipboard content") &&
+        !selectedText.includes("Try copying text manually")
+      ) {
+        console.log("Text captured successfully, processing with AI...");
+        // Query Ollama
+        console.log("Querying Ollama...");
+        const aiResponse = await queryOllama(selectedText.trim());
+
+        // Send to renderer process
+        if (mainWindow && !mainWindow.isDestroyed()) {
+          mainWindow.webContents.send("text-captured", {
+            text: selectedText.trim(),
+            response: aiResponse,
+          });
+          mainWindow.show();
+        }
+      } else {
+        console.log("No text captured, showing instructions...");
+        if (mainWindow && !mainWindow.isDestroyed()) {
+          mainWindow.webContents.send("text-captured", {
+            text: "",
+            response:
+              "📋 No text captured!\n\nTo use this app:\n1. Select text on your screen\n2. Copy it manually (Cmd+C)\n3. Use the shortcut (Cmd+Ctrl+J)\n\nThis will analyze your copied text with AI.\n\nNote: Automatic copy requires accessibility permissions. For now, please copy text manually.",
+          });
+          mainWindow.show();
+        }
+      }
+
+      // Restore original clipboard content
+      if (originalClipboard) {
+        clipboard.writeText(originalClipboard);
+        console.log("Original clipboard content restored");
+      }
+    } else {
+      // Fallback to manual copy method
+      console.log("Using manual copy method...");
+      await captureTextFromClipboard();
+    }
+  } catch (error) {
+    console.error("Error capturing selected text:", error);
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send("text-captured", {
+        text: "",
+        response: `Error: ${error.message}. Please try again.\n\nTry copying text manually (Cmd+C) first, then use the shortcut.`,
       });
       mainWindow.show();
     }
@@ -142,7 +343,13 @@ function createTray() {
       },
     },
     {
-      label: "Capture Text (Global Shortcut)",
+      label: "Capture Selected Text (Auto Copy)",
+      click: () => {
+        captureSelectedText();
+      },
+    },
+    {
+      label: "Capture Clipboard Text (Manual)",
       click: () => {
         captureTextFromClipboard();
       },
@@ -188,7 +395,7 @@ function registerGlobalShortcuts() {
   // Register Cmd+Ctrl+J as primary shortcut (less commonly used)
   const ret = globalShortcut.register("CommandOrControl+Control+J", () => {
     console.log("Primary shortcut triggered");
-    captureTextFromClipboard();
+    captureSelectedText();
   });
 
   if (!ret) {
@@ -198,7 +405,7 @@ function registerGlobalShortcuts() {
   // Alternative shortcut: Cmd+Ctrl+K
   const ret2 = globalShortcut.register("CommandOrControl+Control+K", () => {
     console.log("Alternative shortcut 1 triggered");
-    captureTextFromClipboard();
+    captureSelectedText();
   });
 
   if (!ret2) {
@@ -208,7 +415,7 @@ function registerGlobalShortcuts() {
   // Third option: Cmd+Ctrl+L
   const ret3 = globalShortcut.register("CommandOrControl+Control+L", () => {
     console.log("Alternative shortcut 2 triggered");
-    captureTextFromClipboard();
+    captureSelectedText();
   });
 
   if (!ret3) {
