@@ -6,6 +6,7 @@ const {
   Menu,
   nativeImage,
   clipboard,
+  ipcMain,
 } = require("electron");
 const path = require("path");
 const { exec } = require("child_process");
@@ -75,9 +76,10 @@ async function captureTextFromClipboard() {
           response: aiResponse,
         });
         console.log("Showing window for clipboard text...");
-        mainWindow.show();
-        mainWindow.focus();
-        mainWindow.moveTop();
+
+        // Bring to current desktop/space on macOS
+        bringWindowToCurrentDesktop();
+
         console.log("Window should now be visible and focused");
       }
     } else {
@@ -88,9 +90,10 @@ async function captureTextFromClipboard() {
             "📋 No text in clipboard!\n\nTo use this app:\n1. Select text on your screen\n2. Copy it (Cmd+C)\n3. Use the shortcut (Cmd+Ctrl+J)\n\nThis will analyze your copied text with AI.",
         });
         console.log("Showing window for no clipboard text...");
-        mainWindow.show();
-        mainWindow.focus();
-        mainWindow.moveTop();
+
+        // Bring to current desktop/space on macOS
+        bringWindowToCurrentDesktop();
+
         console.log("Window should now be visible and focused");
       }
     }
@@ -102,9 +105,10 @@ async function captureTextFromClipboard() {
         response: `Error: ${error.message}. Please try again.`,
       });
       console.log("Showing window for clipboard error...");
-      mainWindow.show();
-      mainWindow.focus();
-      mainWindow.moveTop();
+
+      // Bring to current desktop/space on macOS
+      bringWindowToCurrentDesktop();
+
       console.log("Window should now be visible and focused");
     }
   } finally {
@@ -273,7 +277,10 @@ async function captureSelectedText() {
             response: aiResponse,
           });
           console.log("Showing window for successful text capture...");
-          mainWindow.show();
+
+          // Bring to current desktop/space on macOS
+          bringWindowToCurrentDesktop();
+
           mainWindow.setAlwaysOnTop(true);
           mainWindow.focus();
           mainWindow.moveTop();
@@ -303,9 +310,10 @@ async function captureSelectedText() {
             response: `📋 No text captured from ${activeAppName}!\n\nTo use this app:\n1. Select text on your screen (highlight it)\n2. Copy it manually (Cmd+C)\n3. Use the shortcut (Cmd+Ctrl+J)\n\nThis will analyze your copied text with AI.\n\nNote: Make sure text is actually selected (highlighted) before using the shortcut.`,
           });
           console.log("Showing window for no text captured...");
-          mainWindow.show();
-          mainWindow.focus();
-          mainWindow.moveTop();
+
+          // Bring to current desktop/space on macOS
+          bringWindowToCurrentDesktop();
+
           console.log("Window should now be visible and focused");
         }
       }
@@ -328,9 +336,10 @@ async function captureSelectedText() {
         response: `Error: ${error.message}. Please try again.\n\nTry copying text manually (Cmd+C) first, then use the shortcut.`,
       });
       console.log("Showing window for error...");
-      mainWindow.show();
-      mainWindow.focus();
-      mainWindow.moveTop();
+
+      // Bring to current desktop/space on macOS
+      bringWindowToCurrentDesktop();
+
       console.log("Window should now be visible and focused");
     }
   } finally {
@@ -475,6 +484,47 @@ function registerGlobalShortcuts() {
 
   console.log("Global shortcuts registration completed");
 }
+
+// Helper function to bring window to current desktop on macOS
+function bringWindowToCurrentDesktop() {
+  if (process.platform === "darwin") {
+    // Show the window first to ensure it's visible
+    mainWindow.show();
+    // Ensure it's only visible on the current space
+    mainWindow.setVisibleOnAllWorkspaces(false);
+    // Bring to front
+    mainWindow.moveTop();
+  } else {
+    mainWindow.show();
+    mainWindow.focus();
+    mainWindow.moveTop();
+  }
+}
+
+// Handle sending edited text to Ollama
+ipcMain.on("send-to-ollama", async (event, text) => {
+  try {
+    console.log(
+      "Sending edited text to Ollama:",
+      text.substring(0, 50) + "..."
+    );
+    const aiResponse = await queryOllama(text.trim());
+
+    // Send response back to renderer
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send("ollama-response", {
+        response: aiResponse,
+      });
+    }
+  } catch (error) {
+    console.error("Error sending edited text to Ollama:", error);
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send("ollama-response", {
+        response: `Error: ${error.message}. Please try again.`,
+      });
+    }
+  }
+});
 
 app.whenReady().then(() => {
   console.log("🚀 App is ready, initializing...");
