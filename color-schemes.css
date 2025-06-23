@@ -1,0 +1,365 @@
+/* Color Scheme Switcher for Text Lookup App */
+
+/* ===== EARTH & SUNRISE (Current) ===== */
+.theme-earth-sunrise {
+  --color-bg-primary: #fff8f0; /* Warm cream background */
+  --color-bg-secondary: #fffaf5; /* Soft cream content areas */
+  --color-bg-status: #f0fff0; /* Light green status areas */
+  --color-bg-error: #fff0f0; /* Light red error areas */
+
+  --color-primary: #e67e22; /* Warm orange - main accent */
+  --color-secondary: #f39c12; /* Golden orange - secondary accent */
+  --color-success: #90ee90; /* Light green - success states */
+  --color-error: #ffb6c1; /* Soft pink - error states */
+  --color-sunrise: #ffd700; /* Golden yellow - decorative */
+  --color-earth: #f4a460; /* Sandy brown - warm elements */
+
+  --color-text-primary: #8b6f47; /* Warm brown - main text */
+  --color-text-secondary: #f39c12; /* Golden orange - secondary text */
+  --color-text-button: #228b22; /* Dark green - button text */
+  --color-text-error: #dc143c; /* Dark red - error text */
+
+  --color-border-primary: #f4a460; /* Sandy brown - main borders */
+  --color-border-secondary: #deb887; /* Warm brown - secondary borders */
+  --color-border-focus: #e67e22; /* Warm orange - focus borders */
+
+  --color-shadow-primary: #d2691e; /* Dark orange - main shadows */
+  --color-shadow-secondary: #d35400; /* Darker orange - text shadows */
+
+  --color-grid: #ffd4b3; /* Light orange - grid pattern */
+  --color-overlay: rgba(244, 164, 96, 0.1); /* Sandy brown overlay */
+
+  /* Button Colors */
+  --color-button-bg: #90ee90;
+  --color-button-border: #98fb98;
+  --color-button-hover: #98fb98;
+  --color-button-text: #228b22;
+  --color-button-shadow: #90ee90;
+
+  /* Icon Colors */
+  --color-icon-primary: #e67e22;
+  --color-icon-secondary: #f39c12;
+  --color-icon-success: #90ee90;
+  --color-icon-error: #ffb6c1;
+  --color-icon-sunrise: #ffd700;
+  --color-icon-heart: #ff6b6b;
+
+  /* Scrollbar Colors */
+  --color-scrollbar-track: #fffaf5;
+  --color-scrollbar-thumb: #deb887;
+  --color-scrollbar-hover: #f4a460;
+}
+
+/* ===== OCEAN DEPTHS ===== */
+.theme-ocean-depths {
+  --color-bg-primary: #f0f8ff; /* Light blue background */
+  --color-bg-secondary: #f5f9ff; /* Soft blue content areas */
+  --color-bg-status: #f0fff8; /* Light mint status areas */
+  --color-bg-error: #fff0f5; /* Light pink error areas */
+
+  --color-primary: #1e90ff; /* Dodger blue - main accent */
+  --color-secondary: #4169e1; /* Royal blue - secondary accent */
+  --color-success: #98fb98; /* Pale green - success states */
+  --color-error: #ffb6c1; /* Light pink - error states */
+  --color-sunrise: #00bfff; /* Deep sky blue - decorative */
+  --color-earth: #4682b4; /* Steel blue - warm elements */
+
+  --color-text-primary: #2f4f4f; /* Dark slate - main text */
+  --color-text-secondary: #4169e1; /* Royal blue - secondary text */
+  --color-text-button: #006400; /* Dark green - button text */
+  --color-text-error: #dc143c; /* Crimson - error text */
+
+  --color-border-primary: #4682b4; /* Steel blue - main borders */
+  --color-border-secondary: #87ceeb; /* Sky blue - secondary borders */
+  --color-border-focus: #1e90ff; /* Dodger blue - focus borders */
+
+  --color-shadow-primary: #191970; /* Midnight blue - main shadows */
+  --color-shadow-secondary: #000080; /* Navy - text shadows */
+
+  --color-grid: #b0e0e6; /* Powder blue - grid pattern */
+  --color-overlay: rgba(70, 130, 180, 0.1); /* Steel blue overlay */
+
+  /* Button Colors */
+  --color-button-bg: #98fb98;
+  --color-button-border: #90ee90;
+  --color-button-hover: #90ee90;
+  --color-button-text: #006400;
+  --color-button-shadow: #98fb98;
+
+  /* Icon Colors */
+  --color-icon-primary: #1e90ff;
+  --color-icon-secondary: #4169e1;
+  --color-icon-success: #98fb98;
+  --color-icon-error: #ffb6c1;
+  --color-icon-sunrise: #00bfff;
+  --color-icon-heart: #ff69b4;
+
+  /* Scrollbar Colors */
+  --color-scrollbar-track: #f5f9ff;
+  --color-scrollbar-thumb: #87ceeb;
+  --color-scrollbar-hover: #4682b4;
+}
+
+/* ===== FOREST MIST ===== */
+.theme-forest-mist {
+  --color-bg-primary: #f5f5dc; /* Beige background */
+  --color-bg-secondary: #faf0e6; /* Linen content areas */
+  --color-bg-status: #f0fff0; /* Honeydew status areas */
+  --color-bg-error: #fff5ee; /* Seashell error areas */
+
+  --color-primary: #228b22; /* Forest green - main accent */
+  --color-secondary: #32cd32; /* Lime green - secondary accent */
+  --color-success: #90ee90; /* Light green - success states */
+  --color-error: #ffa07a; /* Light salmon - error states */
+  --color-sunrise: #daa520; /* Goldenrod - decorative */
+  --color-earth: #8fbc8f; /* Dark sea green - warm elements */
+
+  --color-text-primary: #556b2f; /* Dark olive - main text */
+  --color-text-secondary: #32cd32; /* Lime green - secondary text */
+  --color-text-button: #006400; /* Dark green - button text */
+  --color-text-error: #8b0000; /* Dark red - error text */
+
+  --color-border-primary: #8fbc8f; /* Dark sea green - main borders */
+  --color-border-secondary: #98fb98; /* Pale green - secondary borders */
+  --color-border-focus: #228b22; /* Forest green - focus borders */
+
+  --color-shadow-primary: #2f4f2f; /* Dark olive - main shadows */
+  --color-shadow-secondary: #006400; /* Dark green - text shadows */
+
+  --color-grid: #d2b48c; /* Tan - grid pattern */
+  --color-overlay: rgba(143, 188, 143, 0.1); /* Dark sea green overlay */
+
+  /* Button Colors */
+  --color-button-bg: #90ee90;
+  --color-button-border: #98fb98;
+  --color-button-hover: #98fb98;
+  --color-button-text: #006400;
+  --color-button-shadow: #90ee90;
+
+  /* Icon Colors */
+  --color-icon-primary: #228b22;
+  --color-icon-secondary: #32cd32;
+  --color-icon-success: #90ee90;
+  --color-icon-error: #ffa07a;
+  --color-icon-sunrise: #daa520;
+  --color-icon-heart: #ff6347;
+
+  /* Scrollbar Colors */
+  --color-scrollbar-track: #faf0e6;
+  --color-scrollbar-thumb: #98fb98;
+  --color-scrollbar-hover: #8fbc8f;
+}
+
+/* ===== COSMIC NIGHT ===== */
+.theme-cosmic-night {
+  --color-bg-primary: #0a0a0a; /* Dark background */
+  --color-bg-secondary: #1a1a1a; /* Dark gray content areas */
+  --color-bg-status: #0f1a0f; /* Dark green status areas */
+  --color-bg-error: #1a0f0f; /* Dark red error areas */
+
+  --color-primary: #9370db; /* Medium purple - main accent */
+  --color-secondary: #ba55d3; /* Medium orchid - secondary accent */
+  --color-success: #32cd32; /* Lime green - success states */
+  --color-error: #ff69b4; /* Hot pink - error states */
+  --color-sunrise: #ffd700; /* Gold - decorative */
+  --color-earth: #4b0082; /* Indigo - warm elements */
+
+  --color-text-primary: #e6e6fa; /* Lavender - main text */
+  --color-text-secondary: #ba55d3; /* Medium orchid - secondary text */
+  --color-text-button: #32cd32; /* Lime green - button text */
+  --color-text-error: #ff69b4; /* Hot pink - error text */
+
+  --color-border-primary: #4b0082; /* Indigo - main borders */
+  --color-border-secondary: #663399; /* Rebecca purple - secondary borders */
+  --color-border-focus: #9370db; /* Medium purple - focus borders */
+
+  --color-shadow-primary: #2d1b69; /* Dark purple - main shadows */
+  --color-shadow-secondary: #4b0082; /* Indigo - text shadows */
+
+  --color-grid: #2d1b69; /* Dark purple - grid pattern */
+  --color-overlay: rgba(75, 0, 130, 0.3); /* Indigo overlay */
+
+  /* Button Colors */
+  --color-button-bg: #32cd32;
+  --color-button-border: #228b22;
+  --color-button-hover: #228b22;
+  --color-button-text: #000000;
+  --color-button-shadow: #32cd32;
+
+  /* Icon Colors */
+  --color-icon-primary: #9370db;
+  --color-icon-secondary: #ba55d3;
+  --color-icon-success: #32cd32;
+  --color-icon-error: #ff69b4;
+  --color-icon-sunrise: #ffd700;
+  --color-icon-heart: #ff1493;
+
+  /* Scrollbar Colors */
+  --color-scrollbar-track: #1a1a1a;
+  --color-scrollbar-thumb: #663399;
+  --color-scrollbar-hover: #4b0082;
+}
+
+/* ===== CANDY PASTEL ===== */
+.theme-candy-pastel {
+  --color-bg-primary: #ffe6f2; /* Light pink background */
+  --color-bg-secondary: #fff0f5; /* Lavender blush content areas */
+  --color-bg-status: #f0fff0; /* Honeydew status areas */
+  --color-bg-error: #fff0f5; /* Lavender blush error areas */
+
+  --color-primary: #ff69b4; /* Hot pink - main accent */
+  --color-secondary: #da70d6; /* Orchid - secondary accent */
+  --color-success: #98fb98; /* Pale green - success states */
+  --color-error: #ffb6c1; /* Light pink - error states */
+  --color-sunrise: #ffd700; /* Gold - decorative */
+  --color-earth: #dda0dd; /* Plum - warm elements */
+
+  --color-text-primary: #8b4513; /* Saddle brown - main text */
+  --color-text-secondary: #da70d6; /* Orchid - secondary text */
+  --color-text-button: #228b22; /* Forest green - button text */
+  --color-text-error: #dc143c; /* Crimson - error text */
+
+  --color-border-primary: #dda0dd; /* Plum - main borders */
+  --color-border-secondary: #e6e6fa; /* Lavender - secondary borders */
+  --color-border-focus: #ff69b4; /* Hot pink - focus borders */
+
+  --color-shadow-primary: #c71585; /* Medium violet red - main shadows */
+  --color-shadow-secondary: #da70d6; /* Orchid - text shadows */
+
+  --color-grid: #f0e6ff; /* Very light purple - grid pattern */
+  --color-overlay: rgba(221, 160, 221, 0.2); /* Plum overlay */
+
+  /* Button Colors */
+  --color-button-bg: #98fb98;
+  --color-button-border: #90ee90;
+  --color-button-hover: #90ee90;
+  --color-button-text: #228b22;
+  --color-button-shadow: #98fb98;
+
+  /* Icon Colors */
+  --color-icon-primary: #ff69b4;
+  --color-icon-secondary: #da70d6;
+  --color-icon-success: #98fb98;
+  --color-icon-error: #ffb6c1;
+  --color-icon-sunrise: #ffd700;
+  --color-icon-heart: #ff1493;
+
+  /* Scrollbar Colors */
+  --color-scrollbar-track: #fff0f5;
+  --color-scrollbar-thumb: #e6e6fa;
+  --color-scrollbar-hover: #dda0dd;
+}
+
+/* ===== DESERT SAND ===== */
+.theme-desert-sand {
+  --color-bg-primary: #fdf5e6; /* Old lace background */
+  --color-bg-secondary: #faf0e6; /* Linen content areas */
+  --color-bg-status: #f0fff0; /* Honeydew status areas */
+  --color-bg-error: #fff5ee; /* Seashell error areas */
+
+  --color-primary: #cd853f; /* Peru - main accent */
+  --color-secondary: #daa520; /* Goldenrod - secondary accent */
+  --color-success: #90ee90; /* Light green - success states */
+  --color-error: #f4a460; /* Sandy brown - error states */
+  --color-sunrise: #ffd700; /* Gold - decorative */
+  --color-earth: #d2691e; /* Chocolate - warm elements */
+
+  --color-text-primary: #8b4513; /* Saddle brown - main text */
+  --color-text-secondary: #daa520; /* Goldenrod - secondary text */
+  --color-text-button: #228b22; /* Forest green - button text */
+  --color-text-error: #a0522d; /* Sienna - error text */
+
+  --color-border-primary: #d2691e; /* Chocolate - main borders */
+  --color-border-secondary: #deb887; /* Burlywood - secondary borders */
+  --color-border-focus: #cd853f; /* Peru - focus borders */
+
+  --color-shadow-primary: #8b4513; /* Saddle brown - main shadows */
+  --color-shadow-secondary: #a0522d; /* Sienna - text shadows */
+
+  --color-grid: #f4a460; /* Sandy brown - grid pattern */
+  --color-overlay: rgba(210, 105, 30, 0.1); /* Chocolate overlay */
+
+  /* Button Colors */
+  --color-button-bg: #90ee90;
+  --color-button-border: #98fb98;
+  --color-button-hover: #98fb98;
+  --color-button-text: #228b22;
+  --color-button-shadow: #90ee90;
+
+  /* Icon Colors */
+  --color-icon-primary: #cd853f;
+  --color-icon-secondary: #daa520;
+  --color-icon-success: #90ee90;
+  --color-icon-error: #f4a460;
+  --color-icon-sunrise: #ffd700;
+  --color-icon-heart: #ff6347;
+
+  /* Scrollbar Colors */
+  --color-scrollbar-track: #faf0e6;
+  --color-scrollbar-thumb: #deb887;
+  --color-scrollbar-hover: #d2691e;
+}
+
+/* ===== VIBRANT GAME ===== */
+.theme-vibrant-game {
+  --color-bg-primary: #21152a; /* Very Dark Purple */
+  --color-bg-secondary: #3d2c4b; /* Dark Purple */
+  --color-bg-status: #3d2c4b; /* Dark Purple */
+  --color-bg-error: #5e3c41; /* Dark Red-ish */
+
+  --color-primary: #de4587; /* Pink */
+  --color-secondary: #f3d360; /* Yellow */
+  --color-success: #58c442; /* Green */
+  --color-error: #de4587; /* Pink */
+
+  --color-text-primary: #ede3f6; /* Light Purple */
+  --color-text-secondary: #f3d360; /* Yellow */
+  --color-text-button: #ffffff; /* White */
+  --color-text-error: #ede3f6; /* Light Purple */
+
+  --color-border-primary: #120c17; /* Nearly Black Purple */
+  --color-border-secondary: #584469; /* Mid Purple */
+  --color-border-focus: #f3d360; /* Yellow */
+
+  --color-shadow-primary: #000000; /* Black */
+  --color-shadow-secondary: rgba(0, 0, 0, 0.4); /* Black Transparent */
+
+  --color-grid: rgba(255, 255, 255, 0.05);
+  --color-overlay: rgba(0, 0, 0, 0.1);
+
+  /* Button Colors */
+  --color-button-bg: #58c442; /* Green */
+  --color-button-border: #3c8a2e; /* Dark Green */
+  --color-button-hover: #79d465; /* Lighter Green */
+  --color-button-text: #ffffff; /* White */
+  --color-button-shadow: #3c8a2e; /* Dark Green */
+
+  /* Icon Colors */
+  --color-icon-primary: #de4587; /* Pink */
+  --color-icon-secondary: #f3d360; /* Yellow */
+  --color-icon-success: #58c442; /* Green */
+  --color-icon-error: #de4587; /* Pink */
+  --color-icon-sunrise: #f3d360; /* Yellow */
+  --color-icon-heart: #de4587; /* Pink */
+  --color-icon-bg: #3d2c4b; /* Dark Purple */
+
+  /* Scrollbar Colors */
+  --color-scrollbar-track: #21152a;
+  --color-scrollbar-thumb: #584469;
+  --color-scrollbar-hover: #de4587;
+}
+
+/* ===== HOW TO USE ===== */
+/*
+To switch themes, add one of these classes to the <body> tag:
+
+<body class="theme-earth-sunrise">     (current default)
+<body class="theme-ocean-depths">
+<body class="theme-forest-mist">
+<body class="theme-cosmic-night">
+<body class="theme-candy-pastel">
+<body class="theme-desert-sand">
+<body class="theme-vibrant-game">
+
+Or you can create your own custom theme by modifying the CSS variables in the :root selector.
+*/

@@ -358,7 +358,7 @@ function createWindow() {
     },
     show: false,
     title: "Text Lookup",
-    icon: path.join(__dirname, "assets", "icon.png"),
+    icon: path.join(__dirname, "assets", "pixel-icon.svg"),
     alwaysOnTop: true,
   });
 
@@ -377,7 +377,7 @@ function createWindow() {
 }
 
 function createTray() {
-  const iconPath = path.join(__dirname, "assets", "icon.png");
+  const iconPath = path.join(__dirname, "assets", "pixel-icon.svg");
   const icon = nativeImage.createFromPath(iconPath);
 
   tray = new Tray(icon);

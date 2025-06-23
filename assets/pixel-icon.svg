@@ -1,0 +1,40 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .pixel { image-rendering: pixelated; }
+    </style>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="64" height="64" fill="#fff8f0"/>
+  
+  <!-- Pixel grid background -->
+  <defs>
+    <pattern id="grid" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="4" fill="#ffd4b3" opacity="0.3"/>
+    </pattern>
+  </defs>
+  <rect width="64" height="64" fill="url(#grid)"/>
+  
+  <!-- Magnifying glass body -->
+  <rect x="16" y="16" width="24" height="24" fill="#e67e22"/>
+  <rect x="20" y="20" width="16" height="16" fill="#fffaf5"/>
+  
+  <!-- Magnifying glass handle -->
+  <rect x="36" y="36" width="8" height="8" fill="#e67e22"/>
+  <rect x="40" y="40" width="4" height="4" fill="#e67e22"/>
+  
+  <!-- Text lines -->
+  <rect x="24" y="24" width="8" height="2" fill="#f39c12"/>
+  <rect x="24" y="28" width="12" height="2" fill="#f39c12"/>
+  <rect x="24" y="32" width="6" height="2" fill="#f39c12"/>
+  
+  <!-- Cute pixel details -->
+  <rect x="44" y="44" width="2" height="2" fill="#ffd700"/>
+  <rect x="18" y="18" width="2" height="2" fill="#90ee90"/>
+  <rect x="44" y="18" width="2" height="2" fill="#90ee90"/>
+  <rect x="18" y="44" width="2" height="2" fill="#ffd700"/>
+  
+  <!-- Border -->
+  <rect x="0" y="0" width="64" height="64" fill="none" stroke="#f4a460" stroke-width="2"/>
+</svg> 
